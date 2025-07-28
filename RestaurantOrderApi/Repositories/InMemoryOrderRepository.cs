@@ -3,6 +3,9 @@ using RestaurantOrderApi.Models;
 
 namespace RestaurantOrderApi.Repositories;
 
+/// <summary>
+/// In-memory implementation of the order repository using a concurrent dictionary for thread-safe operations.
+/// </summary>
 public class InMemoryOrderRepository : IOrderRepository
 {
     #region Variables
@@ -13,11 +16,14 @@ public class InMemoryOrderRepository : IOrderRepository
     
     #region Methods
 
+    /// <inheritdoc/>
     public Order? GetById(Guid id)
     {
         return this._orders.TryGetValue(id, out var order) ? order : null;
     }
 
+    /// <inheritdoc/>
+    /// <exception cref="Exception">Thrown when the order cannot be added to the repository.</exception>
     public void Create(Order order)
     {
         bool added = this._orders.TryAdd(order.Id, order);
@@ -27,11 +33,13 @@ public class InMemoryOrderRepository : IOrderRepository
         }
     }
 
+    /// <inheritdoc/>
     public bool Exists(Guid id)
     {
         return this._orders.ContainsKey(id);
     }
 
+    /// <inheritdoc/>
     public List<Order> GetAll()
     {
         return this._orders.Values.ToList();

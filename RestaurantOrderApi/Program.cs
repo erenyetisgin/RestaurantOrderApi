@@ -1,3 +1,4 @@
+using System.Reflection;
 using RestaurantOrderApi.Repositories;
 using RestaurantOrderApi.Services;
 
@@ -12,8 +13,23 @@ public class Program
         // Add services to the container.
 
         builder.Services.AddControllers();
-        builder.Services.AddEndpointsApiExplorer(); // Enables endpoint discovery
-        builder.Services.AddSwaggerGen();           // Generates OpenAPI docs
+        builder.Services.AddEndpointsApiExplorer();
+        
+        // Configure Swagger with XML documentation
+        builder.Services.AddSwaggerGen(options =>
+        {
+            // Set the comments path for the Swagger JSON and UI
+            var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+            
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "Restaurant Order API",
+                Version = "v1",
+                Description = "An API for managing restaurant orders and menus"
+            });
+        });
 
         // Register Services and Repositories.
         builder.Services.AddSingleton<IMenuRepository, InMemoryMenuRepository>();
@@ -34,7 +50,6 @@ public class Program
         app.UseHttpsRedirection();
 
         app.UseAuthorization();
-
 
         app.MapControllers();
 
