@@ -12,7 +12,6 @@ A RESTful API for managing restaurant menus and orders, built with ASP.NET Core.
 - Order Management
   - Create orders from daily menus
   - Retrieve order details
-  - Validation of menu items availability
 
 ## Technology Stack
 
